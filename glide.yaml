@@ -1,0 +1,10 @@
+package: github.com/dbcdk/morannon
+import:
+- package: github.com/dbcdk/go-smaug
+  subpackages:
+  - smaug
+- package: github.com/vulcand/oxy
+  subpackages:
+  - forward
+  - roundrobin
+- package: gopkg.in/alecthomas/kingpin.v2

@@ -1,0 +1,31 @@
+hash: c03a78386043d5b39b8598ee75db2fc90b36d65a27ba3558f0fa32e4e1729de3
+updated: 2016-06-14T11:10:47.665350044+02:00
+imports:
+- name: github.com/alecthomas/template
+  version: a0175ee3bccc567396460bf5acd36800cb10c49c
+  subpackages:
+  - parse
+- name: github.com/alecthomas/units
+  version: 2efee857e7cfd4f3d0138cc3cbb1b4966962b93a
+- name: github.com/codahale/hdrhistogram
+  version: f8ad88b59a584afeee9d334eff879b104439117b
+- name: github.com/dbcdk/go-smaug
+  version: d86551e3f3107dab1e6895594fbcc1abb74f881b
+  subpackages:
+  - smaug
+- name: github.com/mailgun/timetools
+  version: fd192d755b00c968d312d23f521eb0cdc6f66bd0
+- name: github.com/vulcand/oxy
+  version: 11677428db34c4a05354d66d028174d0e3c6e905
+  subpackages:
+  - forward
+  - roundrobin
+  - utils
+  - memmetrics
+- name: gopkg.in/alecthomas/kingpin.v2
+  version: 8cccfa8eb2e3183254457fb1749b2667fbc364c7
+- name: gopkg.in/mgo.v2
+  version: 29cc868a5ca65f401ff318143f9408d02f4799cc
+  subpackages:
+  - bson
+devImports: []
