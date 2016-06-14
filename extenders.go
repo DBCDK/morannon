@@ -9,13 +9,13 @@ func ensureNetwork(app App, identity smaug.Identity) App {
 
 	setNetwork := true
 	for _, constraint := range app.Constraints {
-		if len(constraint) > 0 && constraint[0] == "net_id" {
+		if len(constraint) > 0 && constraint[0] == "net" {
 			setNetwork = false
 		}
 	}
 
 	if setNetwork {
-		app.Constraints = append(app.Constraints, []string{"net_id", "CLUSTER", "prod"})
+		app.Constraints = append(app.Constraints, []string{"net", "CLUSTER", "prod"})
 	}
 
 	return app
