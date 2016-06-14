@@ -1,5 +1,5 @@
-hash: 547015e75d20c16a9224373d2d0b823abb15769a0c78935ee90587250366337e
-updated: 2016-06-14T12:27:38.500130209+02:00
+hash: f0f1023a8e06a7af16e1380f53b03c5e2bfc5e82e954556ceac294a1306a8bef
+updated: 2016-06-14T16:07:27.720892252+02:00
 imports:
 - name: github.com/alecthomas/template
   version: a0175ee3bccc567396460bf5acd36800cb10c49c
@@ -10,9 +10,11 @@ imports:
 - name: github.com/codahale/hdrhistogram
   version: f8ad88b59a584afeee9d334eff879b104439117b
 - name: github.com/dbcdk/go-smaug
-  version: d86551e3f3107dab1e6895594fbcc1abb74f881b
+  version: bb66a55d6d87d0cd99de6fc55dff339a2af7bdb2
   subpackages:
   - smaug
+- name: github.com/julienschmidt/httprouter
+  version: 77366a47451a56bb3ba682481eed85b64fea14e8
 - name: github.com/mailgun/timetools
   version: fd192d755b00c968d312d23f521eb0cdc6f66bd0
 - name: github.com/Sirupsen/logrus
@@ -24,6 +26,10 @@ imports:
   - roundrobin
   - utils
   - memmetrics
+- name: golang.org/x/sys
+  version: 7f918dd405547ecb864d14a8ecbbfe205b5f930f
+  subpackages:
+  - unix
 - name: gopkg.in/alecthomas/kingpin.v2
   version: 8cccfa8eb2e3183254457fb1749b2667fbc364c7
 - name: gopkg.in/mgo.v2

@@ -5,29 +5,31 @@ import (
 	"encoding/json"
 	log "github.com/Sirupsen/logrus"
 	"github.com/dbcdk/go-smaug/smaug"
+	"github.com/julienschmidt/httprouter"
 	"github.com/vulcand/oxy/forward"
 	"github.com/vulcand/oxy/roundrobin"
 	"gopkg.in/alecthomas/kingpin.v2"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"strconv"
 )
 
 var (
-	app            = kingpin.New("timeattack", "Replays http requests").Version("1.0")
-	httpPort       = kingpin.Flag("port", "Http port to listen on").Default("8080").Int()
-	marathons      = kingpin.Flag("marathon", "url to Marathon (repeatable for multiple instances of marathon)").Required().Strings()
-	smaug_location = kingpin.Flag("smaug", "url to Smaug").Required().String()
-	forwarder, _   = forward.New()
+	app                     = kingpin.New("timeattack", "Replays http requests").Version("1.0")
+	httpPort                = kingpin.Flag("port", "Http port to listen on").Default("8080").Int()
+	marathons               = kingpin.Flag("marathon", "url to Marathon (repeatable for multiple instances of marathon)").Required().Strings()
+	marathonUsername        = kingpin.Flag("marathon-username", "username for marathon").String()
+	marathonPassword        = kingpin.Flag("marathon-password", "password for marathon").String()
+	smaug_location          = kingpin.Flag("smaug", "url to Smaug").Required().String()
+	forwarder, _            = forward.New()
 )
 
 func init() {
 	log.SetFormatter(&log.JSONFormatter{})
+	kingpin.Parse()
 }
 
 func main() {
-	kingpin.Parse()
 	smaugUrl, err := url.Parse(*smaug_location)
 	if err != nil {
 		log.Fatal(err)
@@ -64,7 +66,11 @@ func main() {
 				"error": err.Error(),
 			}).Info("request rejected")
 
-			http.Error(w, err.Error(), http.StatusUnauthorized)
+			if req.URL.Path == "/" {
+				http.Redirect(w, req, "/login", 302)
+			} else {
+				http.Error(w, err.Error(), http.StatusUnauthorized)
+			}
 			return
 		}
 
@@ -77,7 +83,11 @@ func main() {
 				"error": err.Error(),
 			}).Info("request rejected")
 
-			http.Error(w, err.Error(), http.StatusForbidden)
+			if req.URL.Path == "/" {
+				http.Redirect(w, req, "/login", 302)
+			} else {
+				http.Error(w, err.Error(), http.StatusForbidden)
+			}
 			return
 		}
 
@@ -111,14 +121,23 @@ func main() {
 			req.ContentLength = int64(len(newBody))
 		}
 
-		log.WithFields(log.Fields{"app": "morannon", "event": "started"}).Info("forwarding request")
+		log.WithFields(log.Fields{
+			"app":   "morannon",
+			"event": "forward_request",
+			"token": *token,
+			"user":  identity.String(),
+		}).Info("forwarding request")
+
+		if len(*marathonUsername) > 0 && len(*marathonPassword) > 0 {
+			req.SetBasicAuth(*marathonUsername, *marathonPassword)
+		}
 
 		marathon.ServeHTTP(w, req)
 	})
 
-	s := &http.Server{
-		Addr:    ":" + strconv.Itoa(*httpPort),
-		Handler: redirect,
-	}
-	log.Fatal(s.ListenAndServe())
+	router := httprouter.Router{RedirectTrailingSlash: false, RedirectFixedPath: false, NotFound: redirect}
+	router.HandlerFunc("GET", "/login", showLogin)
+	router.HandlerFunc("POST", "/login", performLogin)
+
+	log.Fatal(http.ListenAndServe(":8080", &router))
 }
