@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/dbcdk/go-smaug/smaug"
 	"github.com/vulcand/oxy/forward"
 	"github.com/vulcand/oxy/roundrobin"
 	"gopkg.in/alecthomas/kingpin.v2"
@@ -11,7 +12,6 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
-	"github.com/dbcdk/go-smaug/smaug"
 )
 
 var (
