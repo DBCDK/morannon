@@ -36,7 +36,7 @@ func main() {
 
 	validators := []validatorFunc{
 		validatePresenceOfHealthChecks,
-		validatePresenceOfEnvLabel,
+		//validatePresenceOfEnvLabel,
 	}
 
 	extenders := []extenderFunc{

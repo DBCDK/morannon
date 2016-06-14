@@ -11,6 +11,7 @@ type App struct {
 	Cmd             string            `json:"cmd"`
 	Constraints     []Constraint      `json:"constraints"`
 	Cpus            float32           `json:"cpus"`
+	Env             interface{}       `json:"env"`
 	Mem             float32           `json:"mem"`
 	Instances       int               `json:"instances"`
 	Ports           []int             `json:"ports"`

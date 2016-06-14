@@ -16,11 +16,11 @@ func validatePresenceOfHealthChecks(app App, identity smaug.Identity) error {
 func validatePresenceOfEnvLabel(app App, identity smaug.Identity) error {
 	if app.Labels != nil {
 		if env, ok := app.Labels["env"]; ok {
-			if env == "testing" || env == "staging" || env == "prod" {
+			if env == "dev" || env == "staging" || env == "prod" {
 				return nil
 			}
 		}
 	}
 
-	return errors.New("env-label must be present and equal one of testing|staging|prod")
+	return errors.New("env-label must be present and equal one of dev|staging|prod")
 }
