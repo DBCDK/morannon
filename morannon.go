@@ -21,6 +21,8 @@ var (
 	marathonUsername        = kingpin.Flag("marathon-username", "username for marathon").String()
 	marathonPassword        = kingpin.Flag("marathon-password", "password for marathon").String()
 	smaug_location          = kingpin.Flag("smaug", "url to Smaug").Required().String()
+	sslCertFile		= kingpin.Flag("cert", "location of ssl certificate file").String()
+	sslKeyFile		= kingpin.Flag("cert-key", "location of ssl certificate key file").String()
 	forwarder, _            = forward.New()
 )
 
@@ -139,5 +141,10 @@ func main() {
 	router.HandlerFunc("GET", "/login", showLogin)
 	router.HandlerFunc("POST", "/login", performLogin)
 
-	log.Fatal(http.ListenAndServe(":8080", &router))
+	enableSsl := len(*sslCertFile) > 0 && len(*sslKeyFile) > 0
+	if enableSsl {
+		log.Fatal(http.ListenAndServeTLS(":8080", "server.pem", "server.key", &router))
+	} else {
+		log.Fatal(http.ListenAndServe(":8080", &router))
+	}
 }
