@@ -7,7 +7,7 @@ import (
 )
 
 func showLogin(w http.ResponseWriter, r *http.Request) {
-	type LoginData struct {}
+	type LoginData struct{}
 
 	var page = `
 <!DOCTYPE html>
@@ -33,7 +33,6 @@ func showLogin(w http.ResponseWriter, r *http.Request) {
 
 	t.Execute(w, data)
 }
-
 
 func performLogin(w http.ResponseWriter, r *http.Request) {
 	token := r.PostFormValue("access_token")

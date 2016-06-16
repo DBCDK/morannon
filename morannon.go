@@ -15,15 +15,15 @@ import (
 )
 
 var (
-	app                     = kingpin.New("timeattack", "Replays http requests").Version("1.0")
-	httpPort                = kingpin.Flag("port", "Http port to listen on").Default("8080").Int()
-	marathons               = kingpin.Flag("marathon", "url to Marathon (repeatable for multiple instances of marathon)").Required().Strings()
-	marathonUsername        = kingpin.Flag("marathon-username", "username for marathon").String()
-	marathonPassword        = kingpin.Flag("marathon-password", "password for marathon").String()
-	smaug_location          = kingpin.Flag("smaug", "url to Smaug").Required().String()
-	sslCertFile		= kingpin.Flag("cert", "location of ssl certificate file").String()
-	sslKeyFile		= kingpin.Flag("cert-key", "location of ssl certificate key file").String()
-	forwarder, _            = forward.New()
+	app              = kingpin.New("timeattack", "Replays http requests").Version("1.0")
+	httpPort         = kingpin.Flag("port", "Http port to listen on").Default("8080").Int()
+	marathons        = kingpin.Flag("marathon", "url to Marathon (repeatable for multiple instances of marathon)").Required().Strings()
+	marathonUsername = kingpin.Flag("marathon-username", "username for marathon").String()
+	marathonPassword = kingpin.Flag("marathon-password", "password for marathon").String()
+	smaug_location   = kingpin.Flag("smaug", "url to Smaug").Required().String()
+	sslCertFile      = kingpin.Flag("cert", "location of ssl certificate file").String()
+	sslKeyFile       = kingpin.Flag("cert-key", "location of ssl certificate key file").String()
+	forwarder, _     = forward.New()
 )
 
 func init() {

@@ -39,7 +39,6 @@ func validateJobId(app App, identity smaug.Identity) error {
 	return nil
 }
 
-
 func validateNetwork(app App, identity smaug.Identity) error {
 	if app.Constraints != nil {
 		netConfigFound := false
