@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 )
 
 var (
@@ -143,8 +144,8 @@ func main() {
 
 	enableSsl := len(*sslCertFile) > 0 && len(*sslKeyFile) > 0
 	if enableSsl {
-		log.Fatal(http.ListenAndServeTLS(":8080", *sslCertFile, *sslKeyFile, &router))
+		log.Fatal(http.ListenAndServeTLS(":" + strconv.Itoa(*httpPort), *sslCertFile, *sslKeyFile, &router))
 	} else {
-		log.Fatal(http.ListenAndServe(":8080", &router))
+		log.Fatal(http.ListenAndServe(":" + strconv.Itoa(*httpPort), &router))
 	}
 }
