@@ -8,7 +8,7 @@ type validatorFunc func(App, smaug.Identity) error
 type App struct {
 	Id              string            `json:"id"`
 	User            string            `json:"user"`
-	Cmd             string            `json:"cmd"`
+	Cmd             *string            `json:"cmd,omitempty"`
 	Constraints     []Constraint      `json:"constraints"`
 	Cpus            float32           `json:"cpus"`
 	Env             interface{}       `json:"env"`
