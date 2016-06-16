@@ -35,5 +35,18 @@ func validateJobId(app App, identity smaug.Identity) error {
 		return errors.New("Job ID must have a depth of at last 3, e.g. /foo/bar/my-app")
 	}
 
+	idSegments := strings.Split(app.Id, "/")
+	println(idSegments[1])
+
+	switch idSegments[1] {
+	case "prod":
+	case "staging":
+	case "dev":
+		break
+	default:
+		return errors.New("First segment of the job-ID must be one of prod|staging|dev")
+
+	}
+
 	return nil
 }
