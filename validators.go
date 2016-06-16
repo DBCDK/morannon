@@ -7,7 +7,7 @@ import (
 )
 
 func validatePresenceOfHealthChecks(app App, identity smaug.Identity) error {
-	if app.HealthChecks == nil || len(app.HealthChecks) == 0 {
+	if *app.HealthChecks == nil || len(*app.HealthChecks) == 0 {
 		return errors.New("Health checks required")
 	}
 
@@ -15,15 +15,15 @@ func validatePresenceOfHealthChecks(app App, identity smaug.Identity) error {
 }
 
 func validateJobId(app App, identity smaug.Identity) error {
-	if !strings.HasPrefix(app.Id, "/") {
+	if !strings.HasPrefix(*app.Id, "/") {
 		return errors.New("Job ID must start with a '/'")
 	}
 
-	if strings.Count(app.Id, "/") < 3 {
+	if strings.Count(*app.Id, "/") < 3 {
 		return errors.New("Job ID must have a depth of at last 3, e.g. /foo/bar/my-app")
 	}
 
-	idSegments := strings.Split(app.Id, "/")
+	idSegments := strings.Split(*app.Id, "/")
 	println(idSegments[1])
 
 	switch idSegments[1] {
@@ -42,7 +42,7 @@ func validateJobId(app App, identity smaug.Identity) error {
 func validateNetwork(app App, identity smaug.Identity) error {
 	if app.Constraints != nil {
 		netConfigFound := false
-		for _, constraint := range app.Constraints {
+		for _, constraint := range *app.Constraints {
 			if len(constraint) == 3 && constraint[0] == "net" && constraint[1] == "CLUSTER" {
 				netConfigFound = true
 			}
