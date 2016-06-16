@@ -50,13 +50,12 @@ func main() {
 	}
 
 	validators := []validatorFunc{
-		validatePresenceOfHealthChecks,
 		validateJobId,
-		//validatePresenceOfEnvLabel,
+		validateNetwork,
+		validatePresenceOfHealthChecks,
 	}
 
 	extenders := []extenderFunc{
-		ensureNetwork,
 		setOwner,
 	}
 

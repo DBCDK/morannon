@@ -14,18 +14,6 @@ func validatePresenceOfHealthChecks(app App, identity smaug.Identity) error {
 	return nil
 }
 
-func validatePresenceOfEnvLabel(app App, identity smaug.Identity) error {
-	if app.Labels != nil {
-		if env, ok := app.Labels["env"]; ok {
-			if env == "dev" || env == "staging" || env == "prod" {
-				return nil
-			}
-		}
-	}
-
-	return errors.New("env-label must be present and equal one of dev|staging|prod")
-}
-
 func validateJobId(app App, identity smaug.Identity) error {
 	if !strings.HasPrefix(app.Id, "/") {
 		return errors.New("Job ID must start with a '/'")
@@ -49,4 +37,22 @@ func validateJobId(app App, identity smaug.Identity) error {
 	}
 
 	return nil
+}
+
+
+func validateNetwork(app App, identity smaug.Identity) error {
+	if app.Constraints != nil {
+		netConfigFound := false
+		for _, constraint := range app.Constraints {
+			if len(constraint) == 3 && constraint[0] == "net" && constraint[1] == "CLUSTER" {
+				netConfigFound = true
+			}
+		}
+
+		if netConfigFound {
+			return nil
+		}
+	}
+
+	return errors.New("Missing network constraint (e.g. [\"net\", \"CLUSTER\", \"prod\"])")
 }
