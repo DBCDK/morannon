@@ -144,8 +144,8 @@ func main() {
 
 	enableSsl := len(*sslCertFile) > 0 && len(*sslKeyFile) > 0
 	if enableSsl {
-		log.Fatal(http.ListenAndServeTLS(":" + strconv.Itoa(*httpPort), *sslCertFile, *sslKeyFile, &router))
+		log.Fatal(http.ListenAndServeTLS(":"+strconv.Itoa(*httpPort), *sslCertFile, *sslKeyFile, &router))
 	} else {
-		log.Fatal(http.ListenAndServe(":" + strconv.Itoa(*httpPort), &router))
+		log.Fatal(http.ListenAndServe(":"+strconv.Itoa(*httpPort), &router))
 	}
 }

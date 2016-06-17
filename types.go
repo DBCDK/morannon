@@ -18,7 +18,7 @@ type App struct {
 	Uris            *[]string          `json:"uris,omitempty"`
 	Labels          *map[string]string `json:"labels,omitempty"`
 	HealthChecks    *[]interface{}     `json:"healthChecks,omitempty"`
-	Container       *interface{}     `json:"container,omitempty"`
+	Container       *interface{}       `json:"container,omitempty"`
 	UpgradeStrategy *interface{}       `json:"upgradeStrategy,omitempty"`
 }
 
