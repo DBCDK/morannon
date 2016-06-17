@@ -7,7 +7,7 @@ import (
 )
 
 func validatePresenceOfHealthChecks(app App, identity smaug.Identity) error {
-	if *app.HealthChecks == nil || len(*app.HealthChecks) == 0 {
+	if app.HealthChecks == nil || len(*app.HealthChecks) == 0 {
 		return errors.New("Health checks required")
 	}
 
