@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	app              = kingpin.New("timeattack", "Replays http requests").Version("1.0")
+	app              = kingpin.New("morannon", "validates Marathon requests before forwarding them").Version("1.0")
 	httpPort         = kingpin.Flag("port", "Http port to listen on").Default("8080").Int()
 	marathons        = kingpin.Flag("marathon", "url to Marathon (repeatable for multiple instances of marathon)").Required().Strings()
 	marathonUsername = kingpin.Flag("marathon-username", "username for marathon").String()
