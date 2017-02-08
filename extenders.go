@@ -1,14 +1,12 @@
 package main
 
-import "github.com/dbcdk/go-smaug/smaug"
+import (
+	"github.com/Jeffail/gabs"
+	"github.com/dbcdk/go-smaug/smaug"
+)
 
-func setOwner(app App, identity smaug.Identity) App {
-	if app.Labels == nil {
-		labels := make(map[string]string)
-		app.Labels = &labels
-	}
-
-	(*app.Labels)["owner"] = identity.Id + "@" + identity.Agency
+func setOwner(app *gabs.Container, identity smaug.Identity) *gabs.Container {
+	app.Set(identity.Id+"@"+identity.Agency, "labels", "owner")
 
 	return app
 }

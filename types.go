@@ -1,9 +1,12 @@
 package main
 
-import "github.com/dbcdk/go-smaug/smaug"
+import (
+	"github.com/Jeffail/gabs"
+	"github.com/dbcdk/go-smaug/smaug"
+)
 
-type extenderFunc func(App, smaug.Identity) App
-type validatorFunc func(App, smaug.Identity) error
+type extenderFunc func(*gabs.Container, smaug.Identity) *gabs.Container
+type validatorFunc func(*gabs.Container, smaug.Identity, string) error
 
 type App struct {
 	Id              *string            `json:"id,omitempty"`

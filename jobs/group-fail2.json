@@ -1,0 +1,17 @@
+{
+  "id": "/dev/atu",
+  "apps": [
+    {
+      "id": "/app1",
+      "user": "user",
+      "cmd": "dostuff",
+      "cpus": 0.01,
+      "mem": 64.0,
+      "instances": 3,
+      "ports": [0],
+      "uris": [
+        "http://example.com"
+      ]
+    }
+  ]
+}

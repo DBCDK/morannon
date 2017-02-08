@@ -5,6 +5,7 @@ import:
   - forward
   - roundrobin
 - package: gopkg.in/alecthomas/kingpin.v2
+- package: github.com/Jeffail/gabs
 - package: github.com/Sirupsen/logrus
 - package: github.com/julienschmidt/httprouter
 - package: github.com/dbcdk/go-smaug

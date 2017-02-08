@@ -2,7 +2,7 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
+	"github.com/Jeffail/gabs"
 	log "github.com/Sirupsen/logrus"
 	"github.com/dbcdk/go-smaug/smaug"
 	"github.com/julienschmidt/httprouter"
@@ -13,6 +13,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 )
 
 var (
@@ -25,6 +26,18 @@ var (
 	sslCertFile      = kingpin.Flag("cert", "location of ssl certificate file").String()
 	sslKeyFile       = kingpin.Flag("cert-key", "location of ssl certificate key file").String()
 	forwarder, _     = forward.New()
+	appValidators       = []validatorFunc{
+		validateIsApp,
+		validateId,
+		//validateNetwork,
+		//validatePresenceOfHealthChecks,
+	}
+	groupValidators       = []validatorFunc{
+		validateIsGroup,
+	}
+	appExtenders = []extenderFunc{
+		setOwner,
+	}
 )
 
 func init() {
@@ -48,16 +61,6 @@ func main() {
 		}
 
 		marathon.UpsertServer(u)
-	}
-
-	validators := []validatorFunc{
-		validateJobId,
-		validateNetwork,
-		validatePresenceOfHealthChecks,
-	}
-
-	extenders := []extenderFunc{
-		setOwner,
 	}
 
 	redirect := http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
@@ -94,31 +97,49 @@ func main() {
 			return
 		}
 
-		if req.Method == "POST" && req.URL.Path == "/v2/apps" {
+		if (req.Method == "POST" || req.Method == "PUT") && strings.HasPrefix(req.URL.Path, "/v2/apps") {
 			body, err := ioutil.ReadAll(req.Body)
 			if err != nil {
 				panic(err)
 			}
 
-			var marathonApp App
-			json.Unmarshal(body, &marathonApp)
-
-			for _, validator := range validators {
-				err := validator(marathonApp, *identity)
-				if err != nil {
-					http.Error(w, err.Error(), http.StatusBadRequest)
-					return
-				}
+			marathonApp, jsonErr := gabs.ParseJSON(body)
+			if jsonErr != nil {
+				http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+				return
 			}
 
-			for _, extender := range extenders {
-				marathonApp = extender(marathonApp, *identity)
+			marathonApp, processErr := processApp(marathonApp, identity, "/")
+			if processErr != nil {
+				http.Error(w, processErr.Error(), http.StatusBadRequest)
+				return
 			}
 
-			newBody, err := json.MarshalIndent(marathonApp, "", "  ")
+			newBody := marathonApp.BytesIndent("", "  ")
+
+			req.Body = ioutil.NopCloser(bytes.NewReader(newBody))
+			req.ContentLength = int64(len(newBody))
+		}
+
+		if (req.Method == "POST" || req.Method == "PUT") && strings.HasPrefix(req.URL.Path, "/v2/groups") {
+			body, err := ioutil.ReadAll(req.Body)
 			if err != nil {
 				panic(err)
 			}
+
+			marathonGroup, jsonErr := gabs.ParseJSON(body)
+			if jsonErr != nil {
+				http.Error(w, jsonErr.Error(), http.StatusBadRequest)
+				return
+			}
+
+			marathonGroup, processErr := processGroup(marathonGroup, identity, "/")
+			if processErr != nil {
+				http.Error(w, processErr.Error(), http.StatusBadRequest)
+				return
+			}
+
+			newBody := marathonGroup.BytesIndent("", "  ")
 
 			req.Body = ioutil.NopCloser(bytes.NewReader(newBody))
 			req.ContentLength = int64(len(newBody))

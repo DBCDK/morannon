@@ -1,5 +1,5 @@
-hash: f0f1023a8e06a7af16e1380f53b03c5e2bfc5e82e954556ceac294a1306a8bef
-updated: 2016-06-14T16:07:27.720892252+02:00
+hash: dc6e7975a1a3aa23be48606cdd3b270cd599ed8583c17e73181749049e82cdcd
+updated: 2017-02-01T13:18:39.837280792+01:00
 imports:
 - name: github.com/alecthomas/template
   version: a0175ee3bccc567396460bf5acd36800cb10c49c
@@ -13,6 +13,8 @@ imports:
   version: bb66a55d6d87d0cd99de6fc55dff339a2af7bdb2
   subpackages:
   - smaug
+- name: github.com/Jeffail/gabs
+  version: 235106e63529b2743d680b351fa2677fd496ce1e
 - name: github.com/julienschmidt/httprouter
   version: 77366a47451a56bb3ba682481eed85b64fea14e8
 - name: github.com/mailgun/timetools
