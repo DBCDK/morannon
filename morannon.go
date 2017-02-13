@@ -97,49 +97,31 @@ func main() {
 			return
 		}
 
-		if (req.Method == "POST" || req.Method == "PUT") && strings.HasPrefix(req.URL.Path, "/v2/apps") {
+		if (req.Method == "POST" || req.Method == "PUT") && (strings.HasPrefix(req.URL.Path, "/v2/apps") || strings.HasPrefix(req.URL.Path, "/v2/groups")) {
 			body, err := ioutil.ReadAll(req.Body)
 			if err != nil {
 				panic(err)
 			}
 
-			marathonApp, jsonErr := gabs.ParseJSON(body)
+			job, jsonErr := gabs.ParseJSON(body)
+
 			if jsonErr != nil {
 				http.Error(w, jsonErr.Error(), http.StatusBadRequest)
 				return
 			}
 
-			marathonApp, processErr := processApp(marathonApp, identity, "/")
+			var processErr error
+			if strings.HasPrefix(req.URL.Path, "/v2/apps") {
+				job, processErr = processApp(job, identity, "/")
+			} else {
+				job, processErr = processGroup(job, identity, "/")
+			}
 			if processErr != nil {
 				http.Error(w, processErr.Error(), http.StatusBadRequest)
 				return
 			}
 
-			newBody := marathonApp.BytesIndent("", "  ")
-
-			req.Body = ioutil.NopCloser(bytes.NewReader(newBody))
-			req.ContentLength = int64(len(newBody))
-		}
-
-		if (req.Method == "POST" || req.Method == "PUT") && strings.HasPrefix(req.URL.Path, "/v2/groups") {
-			body, err := ioutil.ReadAll(req.Body)
-			if err != nil {
-				panic(err)
-			}
-
-			marathonGroup, jsonErr := gabs.ParseJSON(body)
-			if jsonErr != nil {
-				http.Error(w, jsonErr.Error(), http.StatusBadRequest)
-				return
-			}
-
-			marathonGroup, processErr := processGroup(marathonGroup, identity, "/")
-			if processErr != nil {
-				http.Error(w, processErr.Error(), http.StatusBadRequest)
-				return
-			}
-
-			newBody := marathonGroup.BytesIndent("", "  ")
+			newBody := job.BytesIndent("", "  ")
 
 			req.Body = ioutil.NopCloser(bytes.NewReader(newBody))
 			req.ContentLength = int64(len(newBody))
