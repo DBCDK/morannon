@@ -1,19 +1,15 @@
 package main
 
 import (
-	"bytes"
-	"github.com/Jeffail/gabs"
 	log "github.com/Sirupsen/logrus"
 	"github.com/dbcdk/go-smaug/smaug"
 	"github.com/julienschmidt/httprouter"
 	"github.com/vulcand/oxy/forward"
 	"github.com/vulcand/oxy/roundrobin"
 	"gopkg.in/alecthomas/kingpin.v2"
-	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
-	"strings"
 )
 
 var (
@@ -26,18 +22,6 @@ var (
 	sslCertFile      = kingpin.Flag("cert", "location of ssl certificate file").String()
 	sslKeyFile       = kingpin.Flag("cert-key", "location of ssl certificate key file").String()
 	forwarder, _     = forward.New()
-	appValidators       = []validatorFunc{
-		validateIsApp,
-		validateId,
-		//validateNetwork,
-		//validatePresenceOfHealthChecks,
-	}
-	groupValidators       = []validatorFunc{
-		validateIsGroup,
-	}
-	appExtenders = []extenderFunc{
-		setOwner,
-	}
 )
 
 func init() {
@@ -95,36 +79,6 @@ func main() {
 				http.Error(w, err.Error(), http.StatusForbidden)
 			}
 			return
-		}
-
-		if (req.Method == "POST" || req.Method == "PUT") && (strings.HasPrefix(req.URL.Path, "/v2/apps") || strings.HasPrefix(req.URL.Path, "/v2/groups")) {
-			body, err := ioutil.ReadAll(req.Body)
-			if err != nil {
-				panic(err)
-			}
-
-			job, jsonErr := gabs.ParseJSON(body)
-
-			if jsonErr != nil {
-				http.Error(w, jsonErr.Error(), http.StatusBadRequest)
-				return
-			}
-
-			var processErr error
-			if strings.HasPrefix(req.URL.Path, "/v2/apps") {
-				job, processErr = processApp(job, identity, "/")
-			} else {
-				job, processErr = processGroup(job, identity, "/")
-			}
-			if processErr != nil {
-				http.Error(w, processErr.Error(), http.StatusBadRequest)
-				return
-			}
-
-			newBody := job.BytesIndent("", "  ")
-
-			req.Body = ioutil.NopCloser(bytes.NewReader(newBody))
-			req.ContentLength = int64(len(newBody))
 		}
 
 		log.WithFields(log.Fields{
